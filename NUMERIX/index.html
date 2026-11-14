@@ -1,0 +1,248 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NUMERIX | Métodos Numéricos</title>
+
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- Motor de representación matemática y librerías de cálculo -->
+    <script>
+      window.MathJax = { tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] }, startup: { typeset: false } };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjs@14.2.1/lib/browser/math.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<div class="app-container">
+
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">N</div>
+            <div>
+                <h2>NUMERIX</h2>
+                <span>NUMERICAL SOFTWARE</span>
+            </div>
+        </div>
+
+        <p class="menu-label">HERRAMIENTAS</p>
+
+        <nav>
+            <button class="nav-button active" data-module="inicio">
+                <span>⌂</span> Inicio
+            </button>
+
+            <button class="nav-button" data-module="lagrange">
+                <span>∑</span> Interpolación Lagrange
+            </button>
+
+            <button class="nav-button" data-module="punto-fijo">
+                <span>ƒ</span> Iteración de punto fijo
+            </button>
+
+            <button class="nav-button" data-module="historial">
+                <span>▤</span> Historial
+            </button>
+
+        </nav>
+
+        <div class="sidebar-footer">
+            <span>NUMERIX v1.0</span>
+            <span>Herramienta académica</span>
+            <span id="database-status" role="status">Conectando historial…</span>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <span class="breadcrumb">MÉTODOS NUMÉRICOS / SOFTWARE</span>
+                <h1 id="page-title">Inicio</h1>
+            </div>
+            <div class="status">
+                <span class="status-dot"></span>
+                Sistema disponible
+            </div>
+            <button id="theme-toggle" class="theme-toggle" type="button"
+                aria-label="Cambiar a modo claro" aria-pressed="false">
+                <span aria-hidden="true">☀</span>
+                <span class="theme-label">Modo claro</span>
+            </button>
+        </header>
+
+        <section id="inicio" class="module active">
+
+            <div class="welcome-card">
+                <span class="eyebrow">PLATAFORMA DE CÁLCULO NUMÉRICO</span>
+                <h2>Bienvenido a NUMERIX</h2>
+                <p>
+                    Software académico para resolver problemas
+                    mediante métodos numéricos.
+                </p>
+            </div>
+
+            <div class="module-grid">
+
+                <article class="module-card"
+                    onclick="showModule('lagrange')">
+                    <span class="module-symbol">∑</span>
+                    <h3>Interpolación de Lagrange</h3>
+                    <p>
+                        Construcción de polinomios interpoladores
+                        a partir de puntos conocidos.
+                    </p>
+                    <span class="card-link">Abrir calculadora →</span>
+                </article>
+
+                <article class="module-card"
+                    onclick="showModule('punto-fijo')">
+                    <span class="module-symbol">ƒ(x)</span>
+                    <h3>Iteración de punto fijo</h3>
+                    <p>
+                        Aproximación de raíces mediante
+                        procesos iterativos.
+                    </p>
+                    <span class="card-link">Abrir calculadora →</span>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- MÓDULO LAGRANGE -->
+        <section id="lagrange" class="module">
+
+            <div class="section-heading">
+                <h2>Interpolación de Lagrange</h2>
+                <p>Construcción del polinomio interpolador.</p>
+            </div>
+
+            <div class="panel">
+                <h3>Datos de entrada</h3>
+
+                <div class="table-container">
+                    <table id="points-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Valor X</th>
+                                <th>Valor Y</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="points-body">
+                            <tr>
+                                <td>1</td>
+                                <td><input type="number" step="any" value="1" class="point-x"></td>
+                                <td><input type="number" step="any" value="1" class="point-y"></td>
+                                <td><button class="remove-btn" onclick="removePoint(this)">×</button></td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><input type="number" step="any" value="2" class="point-x"></td>
+                                <td><input type="number" step="any" value="4" class="point-y"></td>
+                                <td><button class="remove-btn" onclick="removePoint(this)">×</button></td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td><input type="number" step="any" value="3" class="point-x"></td>
+                                <td><input type="number" step="any" value="9" class="point-y"></td>
+                                <td><button class="remove-btn" onclick="removePoint(this)">×</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <button class="secondary-btn" onclick="addPoint()">
+                    + Agregar punto
+                </button>
+
+                <div class="input-group">
+                    <label>Valor donde se evaluará el polinomio</label>
+                    <input type="number" id="lagrange-evaluate"
+                        step="any" value="2.5">
+                </div>
+
+                <button class="primary-btn" onclick="calculateLagrange()">
+                    Calcular interpolación
+                </button>
+            </div>
+
+            <div id="lagrange-results" class="results-area"></div>
+        </section>
+
+        <!-- MÓDULO PUNTO FIJO -->
+        <section id="punto-fijo" class="module">
+
+            <div class="section-heading">
+                <h2>Iteración simple de punto fijo</h2>
+                <p>Solución aproximada de ecuaciones no lineales.</p>
+            </div>
+
+            <div class="panel">
+                <h3>Parámetros de entrada</h3>
+
+                <div class="input-group">
+                    <label>Función g(x)</label>
+                    <input type="text" id="fixed-function"
+                        placeholder="Ejemplo: cos(x)"
+                        value="cos(x)">
+                    <small>Utiliza x como variable independiente.</small>
+                </div>
+
+                <div class="input-group">
+                    <label>Valor inicial (x₀)</label>
+                    <input type="number" id="fixed-x0"
+                        step="any" value="0.5">
+                </div>
+
+                <div class="input-group">
+                    <label>Tolerancia</label>
+                    <input type="number" id="fixed-tolerance"
+                        step="any" value="0.0001">
+                </div>
+
+                <div class="input-group">
+                    <label>Máximo de iteraciones</label>
+                    <input type="number" id="fixed-iterations"
+                        value="50" min="1" step="1">
+                </div>
+
+                <button class="primary-btn" onclick="calculateFixedPoint()">
+                    Ejecutar método
+                </button>
+            </div>
+
+            <div id="fixed-results" class="results-area"></div>
+        </section>
+
+        <section id="historial" class="module">
+            <div class="section-heading">
+                <h2>Historial de cálculos</h2>
+                <p>Registros guardados localmente. Exporta un ejercicio y selecciona «Guardar como PDF» en el diálogo de impresión.</p>
+            </div>
+            <div id="history-results" class="history-list" aria-live="polite">
+                <div class="result-card">Cargando historial…</div>
+            </div>
+        </section>
+
+        <footer class="main-footer">
+            NUMERIX © 2026 | Proyecto académico de métodos numéricos
+        </footer>
+
+    </main>
+</div>
+
+<script src="js/math-render.js"></script>
+<script src="js/lagrange.js"></script>
+<script src="js/punto-fijo.js"></script>
+<script src="js/graficas.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
